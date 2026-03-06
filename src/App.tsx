@@ -3,14 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 // === 1. DANH SÁCH ẢNH CỦA BẠN ===
 const MY_PHOTOS = [
-  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400", 
-  "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400",
-  "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400",
-  "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400",
-  "https://images.unsplash.com/photo-1511367461989-f85a21fda167?w=400"
+  "1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg", "8.jpg", "9.jpg"
 ];
 
-const MY_AUDIO_FILE = "/nhac.m4a"; 
+const MY_AUDIO_FILE = "/tamthangba/nhac.mp3"; 
 
 // === ĐỊNH NGHĨA KIỂU DỮ LIỆU ===
 interface TwinklingStar { id: number; top: number; left: number; size: number; delay: number; duration: number; }
@@ -96,7 +92,7 @@ const App: React.FC = () => {
         const newPhoto = {
           id: Date.now(),
           url: MY_PHOTOS[Math.floor(Math.random() * MY_PHOTOS.length)],
-          left: Math.random() * 80 + 10,
+          left: Math.random() * 85 + 5,
           duration: Math.random() * 4 + 6,
           rotate: Math.random() * 40 - 20
         };
@@ -121,13 +117,18 @@ const App: React.FC = () => {
         backgroundPosition: 'center',
       }}
     >
-      <audio ref={audioRef} src={MY_AUDIO_FILE} loop />
+      <audio 
+  ref={audioRef} 
+  src={MY_AUDIO_FILE} 
+  loop 
+  preload="auto" 
+/>
 
       <motion.div 
         onClick={toggleMusic}
         animate={{ rotate: isPlaying ? 360 : 0 }}
         transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
-        className="fixed top-6 right-6 z-[100] cursor-pointer w-12 h-12 flex items-center justify-center bg-white/10 backdrop-blur-md rounded-full border border-white/20 shadow-lg"
+        className="fixed bottom-6 right-6 z-[100] cursor-pointer w-12 h-12 flex items-center justify-center bg-white/10 backdrop-blur-md rounded-full border border-white/20 shadow-lg"
       >
         {isPlaying ? '🎵' : '🔇'}
       </motion.div>
@@ -149,10 +150,10 @@ const App: React.FC = () => {
         {!showGallery ? (
           <motion.div key="scene1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, y: -50 }} className="relative z-10 w-full h-full flex flex-col items-center justify-between py-10">
             <header className="w-full text-center px-4 animate-fade-in">
-              <h1 className="text-5xl md:text-6xl font-['Dancing_Script'] text-transparent bg-clip-text bg-gradient-to-r from-pink-300 to-red-400 drop-shadow-lg">
-                Happy Women's Day
-              </h1>
-              <p className="mt-2 text-lg text-pink-100 font-light tracking-widest uppercase opacity-70">To the light of my life</p>
+              <h1 className="text-5xl md:text-6xl font-['Dancing_Script'] text-transparent bg-clip-text bg-gradient-to-r from-pink-300 to-red-400 drop-shadow-lg leading-relaxed py-2">
+  Happy Women's Day
+</h1>
+              {/* <p className="mt-2 text-lg text-pink-100 font-light tracking-widest uppercase opacity-70">To the light of my life</p> */}
             </header>
 
             <main className="flex flex-col items-center justify-center gap-10 px-6">
@@ -185,12 +186,20 @@ const App: React.FC = () => {
                       <h2 className="text-3xl font-['Dancing_Script'] text-pink-600 mb-4 border-b border-pink-100 pb-2">Thân gửi bạn,</h2>
                       <div className="space-y-4 leading-relaxed text-lg min-h-[120px]">
                         {/* HIỆU ỨNG GÕ CHỮ TẠI ĐÂY */}
-                        <p><Typewriter text="Nhân ngày 8/3, chúc bạn luôn xinh đẹp rạng rỡ và hạnh phúc. Bạn là món quà tuyệt vời nhất mà mình có được..." /></p>
+                        <p><Typewriter text="Chúc Nhã một ngày 8/3 thật trọn vẹn.
+Mong bạn luôn rạng rỡ như ánh nắng ban mai, nhã nhặn như làn gió mát và hạnh phúc như những điều ngọt ngào nhất thế gian. Hy vọng hành trình sắp tới của Nhã sẽ luôn ngập tràn niềm vui và những thành công rực rỡ." /></p>
                         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 4 }}>Hãy nhấn nút bên dưới để xem điều bất ngờ tiếp theo nhé!</motion.p>
                       </div>
-                      <button onClick={() => { setShowGallery(true); if(!isPlaying) toggleMusic(); }} className="mt-6 w-full py-3 bg-gradient-to-r from-pink-500 to-rose-400 text-white rounded-xl font-bold shadow-lg hover:scale-105 transition-transform">
-                        Tiếp tục ✨
-                      </button>
+                      <button 
+  onClick={() => { 
+    setShowGallery(true); 
+    // Ép nhạc phát khi người dùng tương tác
+    audioRef.current?.play().then(() => setIsPlaying(true)).catch(e => console.log(e));
+  }} 
+  className="mt-6 w-full py-3 bg-gradient-to-r from-pink-500 to-rose-400 text-white rounded-xl font-bold shadow-lg hover:scale-105 transition-transform"
+>
+  Tiếp tục ✨
+</button>
                     </motion.div>
                   </motion.div>
                 )}
@@ -198,7 +207,7 @@ const App: React.FC = () => {
             </main>
 
             <footer className="w-full text-center pb-6">
-              <p className="text-xs text-pink-200 opacity-60 font-light">With love and magic</p>
+              <p className="text-xs text-pink-200 opacity-60 font-light">From ngkhson</p>
             </footer>
           </motion.div>
         ) : (
@@ -210,7 +219,7 @@ const App: React.FC = () => {
             {fallingPhotos.map((photo) => (
               <motion.div key={photo.id} initial={{ y: "110vh", x: `${photo.left}vw`, opacity: 0 }} animate={{ y: "-20vh", opacity: [0, 1, 1, 0] }}
                 transition={{ duration: photo.duration, ease: "linear" }}
-                className="absolute bg-white p-2 shadow-2xl rounded-sm w-32 md:w-48" style={{ rotate: `${photo.rotate}deg` }}>
+                className="absolute bg-white p-2 shadow-2xl rounded-sm w-32 md:w-48 -translate-x-1/2" style={{ rotate: `${photo.rotate}deg` }}>
                 <img src={photo.url} className="w-full h-auto rounded-sm" alt="Memory" />
                 <p className="text-center text-pink-500 font-['Dancing_Script'] mt-1 text-sm md:text-base">Beautiful</p>
               </motion.div>
