@@ -1,0 +1,209 @@
+// src/App.tsx (Mã nguồn hoàn chỉnh)
+import React, { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// === ĐỊNH NGHĨA KIỂU DỮ LIỆU ===
+interface TwinklingStar { id: number; top: number; left: number; size: number; delay: number; duration: number; }
+interface ShootingStar { id: number; top: number; left: number; delay: number; duration: number; }
+interface FloatingItem { id: number; icon: string; color: string; x: number; y: number; }
+
+const CUTE_ICONS = [
+  { icon: '💖', color: '#ffb3ba' }, { icon: '✨', color: '#ffffba' }, { icon: '🧸', color: '#baffc9' },
+  { icon: '🌷', color: '#bae1ff' }, { icon: '🌟', color: '#fddde6' }, { icon: '🐰', color: '#e0bbe4' },
+];
+
+const App: React.FC = () => {
+  const [isLetterOpen, setIsLetterOpen] = useState(false);
+  const [shootingStars, setShootingStars] = useState<ShootingStar[]>([]); // State cho sao băng
+
+  // === 1. TẠO HÀNG TRĂM NGÔI SAO LẤP LÁNH CỐ ĐỊNH (GIỮ NGUYÊN) ===
+  const twinklingStars = useMemo(() => {
+    const stars: TwinklingStar[] = [];
+    for (let i = 0; i < 200; i++) {
+      stars.push({
+        id: i,
+        top: Math.random() * 70, // Chỉ ở 70% phía trên
+        left: Math.random() * 100,
+        size: Math.random() * 2 + 1,
+        delay: Math.random() * 5,
+        duration: Math.random() * 3 + 2,
+      });
+    }
+    return stars;
+  }, []);
+
+  // === 2. TẠO ITEM ĐÁNG YÊU BAY QUANH (GIỮ NGUYÊN) ===
+  const floatingItems = useMemo(() => {
+    const items: FloatingItem[] = [];
+    for (let i = 0; i < 12; i++) {
+      const iconInfo = CUTE_ICONS[i % CUTE_ICONS.length];
+      items.push({
+        id: i,
+        ...iconInfo,
+        x: Math.random() * 250 - 125, // Khoảng bay rộng hơn một chút
+        y: Math.random() * 250 - 125,
+      });
+    }
+    return items;
+  }, []);
+
+  // === 3. LOGIC TẠO SAO BĂNG NGẪU NHIÊN (BỔ SUNG) ===
+  useEffect(() => {
+    const createShootingStar = () => {
+      const newStar: ShootingStar = {
+        id: Date.now(),
+        top: Math.random() * 40, // Xuất hiện ở 40% phía trên
+        left: Math.random() * 100,
+        duration: Math.random() * 2 + 1.5, // Bay từ 1.5s đến 3.5s
+        delay: Math.random() * 0.5,
+      };
+      setShootingStars((prev) => [...prev.slice(-8), newStar]); // Chỉ giữ lại tối đa 9 sao băng
+    };
+
+    const interval = setInterval(createShootingStar, 1500); // Tạo sao băng mới mỗi 1.5 giây
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-between font-['Quicksand'] text-white"
+      style={{
+        backgroundImage: `
+          linear-gradient(to bottom, #111827, #1e3a8a 50%, transparent 80%),
+          url('https://images.unsplash.com/photo-1519751138087-5bf79df62d5b?q=80&w=1600'),
+          url('https://images.unsplash.com/photo-1534796636912-3b95b3ac7dc?q=80&w=1600')
+        `,
+        backgroundSize: 'cover, cover, cover',
+        backgroundPosition: 'center, center bottom, center top',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
+      {/* 4. LỚP SAO LẤP LÁNH CỐ ĐỊNH (GIỮ NGUYÊN) */}
+      <div className="absolute inset-0 z-0">
+        {twinklingStars.map((star) => (
+          <div
+            key={star.id}
+            className="absolute bg-white rounded-full animate-twinkle shadow-[0_0_10px_1px_rgba(255,255,255,0.8)]"
+            style={{
+              top: `${star.top}%`,
+              left: `${star.left}%`,
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              animationDelay: `${star.delay}s`,
+              animationDuration: `${star.duration}s`,
+            } as React.CSSProperties}
+          />
+        ))}
+      </div>
+
+      {/* 5. LỚP SAO BĂNG BAY CHÉO (BỔ SUNG) */}
+      <div className="absolute inset-0 z-0">
+        {shootingStars.map((star) => (
+          <div
+            key={star.id}
+            className="absolute w-0.5 h-0.5 bg-white rounded-full shooting-star"
+            style={{
+              top: `${star.top}vh`,
+              left: `${star.left}vw`,
+              animationDelay: `${star.delay}s`,
+              animationDuration: `${star.duration}s`,
+            } as React.CSSProperties}
+          />
+        ))}
+      </div>
+
+      {/* 6. TIÊU ĐỀ (GIỮ NGUYÊN) */}
+      <header className="w-full text-center pt-10 px-4 z-10 animate-fade-in">
+        <h1 className="text-5xl md:text-6xl font-['Dancing_Script'] text-transparent bg-clip-text bg-gradient-to-r from-pink-300 to-red-400 drop-shadow-lg">
+          Happy Women's Day
+        </h1>
+        <p className="mt-2 text-lg text-pink-100 font-light tracking-widest uppercase opacity-70">To the light of my life</p>
+      </header>
+
+      {/* 7. PHẦN TRUNG TÂM (GIỮ NGUYÊN) */}
+      <main className="flex-grow flex flex-col items-center justify-center gap-10 px-6 z-10">
+        <div className="relative flex items-center justify-center">
+          <div className="absolute inset-0 bg-pink-500/30 blur-[100px] rounded-full animate-pulse scale-150"></div>
+          
+          {/* Bó hoa - Giữ nguyên */}
+          <motion.div animate={{ y: [0, -25, 0] }} transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }} className="relative animate-float-gentle text-center z-10">
+            <span className="text-[14rem] md:text-[16rem] leading-none filter drop-shadow-[0_20px_40px_rgba(255,182,193,0.9)] select-none">💐</span>
+          </motion.div>
+
+          {/* ITEM ĐÁNG YÊU BAY QUANH (GIỮ NGUYÊN) */}
+          <div className="absolute inset-0 overflow-visible z-20">
+            {floatingItems.map((item) => (
+              <motion.span
+                key={item.id}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: [0, 1, 0], scale: [0.5, 1, 0.5], x: [item.x, item.x + (Math.random() * 50 - 25)], y: [item.y, item.y - 180], rotate: [0, Math.random() * 360] }}
+                transition={{ duration: 4 + Math.random() * 2, repeat: Infinity, delay: Math.random() * 5, ease: "easeInOut" }}
+                className="absolute text-4xl"
+                style={{ left: `calc(50% + ${item.x}px)`, top: `calc(50% + ${item.y}px)`, color: item.color, textShadow: `0 0 15px ${item.color}` }}
+              >
+                {item.icon}
+              </motion.span>
+            ))}
+          </div>
+        </div>
+
+        {/* PHONG THƯ TƯƠNG TÁC (GIỮ NGUYÊN) */}
+        <div className="relative">
+          <AnimatePresence mode="wait">
+            {!isLetterOpen ? (
+              <motion.div key="envelope" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }} whileTap={{ scale: 0.9 }} onClick={() => setIsLetterOpen(true)} className="cursor-pointer flex flex-col items-center">
+                <div className="text-8xl drop-shadow-2xl filter hue-rotate-15">✉️</div>
+                <p className="text-pink-200 text-sm mt-3 animate-pulse font-semibold bg-pink-800/40 px-4 py-1 rounded-full">Chạm để mở thư từ mình...</p>
+              </motion.div>
+            ) : (
+              <motion.div key="letter" initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0, opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/50 backdrop-blur-md" onClick={() => setIsLetterOpen(false)}>
+                <motion.div className="bg-[#fffdfa] p-8 rounded-xl shadow-2xl w-full max-w-sm border-t-[15px] border-pink-400 relative text-gray-800" onClick={(e) => e.stopPropagation()}>
+                  <button className="absolute top-2 right-4 text-gray-400 text-2xl" onClick={() => setIsLetterOpen(false)}>✕</button>
+                  <h2 className="text-3xl font-['Dancing_Script'] text-pink-600 mb-6 border-b border-pink-100 pb-2">Thân gửi người phụ nữ tuyệt vời nhất,</h2>
+                  <div className="space-y-4 leading-relaxed text-lg">
+                    <p>Nhân ngày 8/3, chúc bạn luôn xinh đẹp rạng rỡ như cánh đồng hoa tulip buổi sớm, mạnh mẽ và kiên cường như những ngôi sao trên bầu trời.</p>
+                    <p>Mọi điều tốt đẹp nhất sẽ đến với bạn!</p>
+                    <p className="font-['Dancing_Script'] text-2xl text-pink-500 text-right mt-8">- Happy March 8th! -</p>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </main>
+
+      {/* CHÂN TRANG (GIỮ NGUYÊN) */}
+      <footer className="w-full text-center pb-6 z-10">
+        <p className="text-xs text-pink-200 opacity-60 font-light">With love and magic for a special woman</p>
+      </footer>
+
+      {/* === CSS ANIMATION (GIỮ NGUYÊN & BỔ SUNG SAO BĂNG) === */}
+      <style>{`
+        @keyframes twinkle { 0%, 100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } }
+        .animate-twinkle { animation: twinkle linear infinite; }
+
+        @keyframes float-gentle { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(2deg); } }
+        .animate-float-gentle { animation: float-gentle 6s ease-in-out infinite; }
+
+        @keyframes fade-in { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fade-in 2s ease-out; }
+
+        /* === BỔ SUNG: CSS cho SAO BĂNG === */
+        @keyframes shooting-star {
+          0% { transform: translateX(0) translateY(0) rotate(-45deg) scale(1); opacity: 1; }
+          70% { opacity: 1; }
+          100% { transform: translateX(100vw) translateY(100vh) rotate(-45deg) scale(0); opacity: 0; }
+        }
+        .shooting-star {
+          position: absolute;
+          animation-name: shooting-star;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+          /* Tạo vệt đuôi lấp lánh cho sao băng */
+          box-shadow: 0 0 0 1px #fff, 0 0 10px 2px #fff, -10px 0 20px 4px #fff;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default App;
