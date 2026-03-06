@@ -186,8 +186,10 @@ const App: React.FC = () => {
                       <h2 className="text-3xl font-['Dancing_Script'] text-pink-600 mb-4 border-b border-pink-100 pb-2">Thân gửi bạn,</h2>
                       <div className="space-y-4 leading-relaxed text-lg min-h-[120px]">
                         {/* HIỆU ỨNG GÕ CHỮ TẠI ĐÂY */}
-                        <p><Typewriter text="Chúc Nhã một ngày 8/3 thật trọn vẹn.
-Mong bạn luôn rạng rỡ như ánh nắng ban mai, nhã nhặn như làn gió mát và hạnh phúc như những điều ngọt ngào nhất thế gian. Hy vọng hành trình sắp tới của Nhã sẽ luôn ngập tràn niềm vui và những thành công rực rỡ." /></p>
+                        <p><Typewriter text="Chúc mừng 8/3, chúc Nhã 3 đừng, 3 không, 3 nhớ.
+Đừng quá khắt khe với bản thân, đừng hoài nghi chính mình đừng quên cậu là phiên bản duy nhất và tuyệt vời nhất.
+Không buồn nhiều quá, không áp lực quá và không để khó khăn làm cậu quên mất cách yêu thương chính mình.
+Nhớ giữ sức khỏe, nhớ cười nhiều hơn và nhớ là có một người đáng yêu luôn sẵn sàng lắng nghe cậu (đáng yêu ý là đáng yêu ấy, không phải đáng yêu kia đâu!)." /></p>
                         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 4 }}>Hãy nhấn nút bên dưới để xem điều bất ngờ tiếp theo nhé!</motion.p>
                       </div>
                       <button 
