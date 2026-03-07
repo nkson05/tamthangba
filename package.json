@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://ngkhson.github.io/tamthangba/",
+  // "homepage": "https://ngkhson.github.io/tamthangba/",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
